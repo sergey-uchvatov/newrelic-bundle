@@ -1,5 +1,5 @@
 {
-    "name": "ekino/newrelic-bundle",
+    "name": "c24-toys/newrelic-bundle",
     "type": "symfony-bundle",
     "description": "Integrate New Relic into Symfony2",
     "keywords": ["metric", "performance", "monitoring"],
