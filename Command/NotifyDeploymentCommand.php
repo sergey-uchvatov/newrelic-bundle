@@ -14,18 +14,21 @@ declare(strict_types=1);
 namespace Ekino\NewRelicBundle\Command;
 
 use Ekino\NewRelicBundle\NewRelic\Config;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: 'newrelic:notify-deployment',
+    description: 'Notifies New Relic that a new deployment has been made',
+)]
 class NotifyDeploymentCommand extends Command
 {
     public const EXIT_NO_APP_NAMES = 1;
     public const EXIT_UNAUTHORIZED = 2;
     public const EXIT_HTTP_ERROR = 3;
-
-    protected static $defaultName = 'newrelic:notify-deployment';
 
     private $newrelic;
 
@@ -56,9 +59,7 @@ class NotifyDeploymentCommand extends Command
                     'description', null, InputOption::VALUE_OPTIONAL,
                     'Text annotation for the deployment — notes for you', null
                 ),
-            ])
-            ->setDescription('Notifies New Relic that a new deployment has been made')
-        ;
+            ]);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
