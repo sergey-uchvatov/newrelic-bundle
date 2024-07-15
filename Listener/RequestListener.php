@@ -16,6 +16,7 @@ namespace Ekino\NewRelicBundle\Listener;
 use Ekino\NewRelicBundle\NewRelic\Config;
 use Ekino\NewRelicBundle\NewRelic\NewRelicInteractorInterface;
 use Ekino\NewRelicBundle\TransactionNamingStrategy\TransactionNamingStrategyInterface;
+use ErrorException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -112,7 +113,13 @@ class RequestListener implements EventSubscriberInterface
      */
     private function isEventValid(KernelRequestEvent $event): bool
     {
-        return HttpKernelInterface::MAIN_REQUEST === $event->getRequestType();
+        try {
+            $const = constant(HttpKernelInterface::class.'::MAIN_REQUEST');
+        } catch (ErrorException) {
+            $const = constant(HttpKernelInterface::class.'::MASTER_REQUEST');
+        }
+
+        return $const === $event->getRequestType();
     }
 }
 
