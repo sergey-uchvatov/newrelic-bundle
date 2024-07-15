@@ -4,3 +4,5 @@ phpunit.xml
 coverage
 composer.lock
 vendor
+
+.idea/
