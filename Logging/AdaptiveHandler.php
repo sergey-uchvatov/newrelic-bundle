@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Ekino\NewRelicBundle\Logging;
 
 use Monolog\Handler\NewRelicHandler;
-use Monolog\LogRecord;
 use Psr\Log\LogLevel;
 
 class AdaptiveHandler extends NewRelicHandler
@@ -27,5 +26,14 @@ class AdaptiveHandler extends NewRelicHandler
         string $transactionName = null
     ) {
         parent::__construct($level, $bubble, $appName, $explodeArrays, $transactionName);
+    }
+
+    protected function write($record): void
+    {
+        if (!$this->isNewRelicEnabled()) {
+            return;
+        }
+
+        parent::write($record);
     }
 }
