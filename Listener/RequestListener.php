@@ -112,7 +112,7 @@ class RequestListener implements EventSubscriberInterface
      */
     private function isEventValid(KernelRequestEvent $event): bool
     {
-        return HttpKernelInterface::MASTER_REQUEST === $event->getRequestType();
+        return HttpKernelInterface::MAIN_REQUEST === $event->getRequestType();
     }
 }
 
