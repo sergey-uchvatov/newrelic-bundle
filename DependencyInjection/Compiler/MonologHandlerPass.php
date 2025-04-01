@@ -17,6 +17,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Reference;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 class MonologHandlerPass implements CompilerPassInterface
 {
@@ -27,8 +28,11 @@ class MonologHandlerPass implements CompilerPassInterface
         }
 
         $configuration = $container->getParameter('ekino.new_relic.monolog');
-        if ($container->hasDefinition('ekino.new_relic.logs_handler') && $container->hasParameter('ekino.new_relic.application_name')) {
-            $container->findDefinition('ekino.new_relic.logs_handler')
+
+        $handlerService = $configuration['service'];
+
+        if ($container->hasDefinition($handlerService) && $container->hasParameter('ekino.new_relic.application_name')) {
+            $container->findDefinition($handlerService)
                 ->setArgument('$level', \is_int($configuration['level']) ? $configuration['level'] : \constant('Monolog\Logger::'.strtoupper($configuration['level'])))
                 ->setArgument('$bubble', true)
                 ->setArgument('$appName', $container->getParameter('ekino.new_relic.application_name'));
@@ -49,7 +53,7 @@ class MonologHandlerPass implements CompilerPassInterface
                 $msg = 'NewRelicBundle configuration error: The logging channel "'.$channel.'" does not exist.';
                 throw new \InvalidArgumentException($msg, 0, $e);
             }
-            $def->addMethodCall('pushHandler', [new Reference('ekino.new_relic.logs_handler')]);
+            $def->addMethodCall('pushHandler', [new Reference($handlerService)]);
         }
     }
 

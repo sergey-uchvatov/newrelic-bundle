@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Ekino\NewRelicBundle\Listener;
 
 use Ekino\NewRelicBundle\NewRelic\Config;
+use Symfony\Component\Console\Event\ConsoleSignalEvent;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Ekino\NewRelicBundle\NewRelic\NewRelicInteractorInterface;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -38,6 +40,8 @@ class CommandListener implements EventSubscriberInterface
         return [
             ConsoleEvents::COMMAND => ['onConsoleCommand', 0],
             ConsoleEvents::ERROR => ['onConsoleError', 0],
+            ConsoleEvents::TERMINATE => ['onConsoleTerminate', 0],
+            ConsoleEvents::SIGNAL => ['onConsoleSignal', 0],
         ];
     }
 
@@ -85,5 +89,15 @@ class CommandListener implements EventSubscriberInterface
     public function onConsoleError(ConsoleErrorEvent $event): void
     {
         $this->interactor->noticeThrowable($event->getError());
+    }
+
+    public function onConsoleTerminate(ConsoleTerminateEvent $event): void
+    {
+        $this->interactor->endTransaction();
+    }
+
+    public function onConsoleSignal(ConsoleSignalEvent $event): void
+    {
+        $this->interactor->endTransaction();
     }
 }

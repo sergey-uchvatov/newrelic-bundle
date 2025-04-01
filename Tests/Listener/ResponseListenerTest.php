@@ -287,7 +287,7 @@ class ResponseListenerTest extends TestCase
         return $mock;
     }
 
-    private function createFilterResponseEventDummy(Request $request = null, Response $response = null, int $requestType = HttpKernelInterface::MASTER_REQUEST)
+    private function createFilterResponseEventDummy(?Request $request = null, ?Response $response = null, int $requestType = HttpKernelInterface::MASTER_REQUEST)
     {
         $kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
 
